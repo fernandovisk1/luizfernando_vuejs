@@ -1,29 +1,22 @@
 <template>
 <div id="todo-list">
-    <form @submit.prevent="$_onAddTodo">
-        <input type="text" v-model="input"/>
-        <button type="submit">Adicionar</button>
-    </form>
-
-    <h3>Em Progresso</h3>
-    <ul id="todos">
-        <template v-for="todoItem in todoList">
-            <aulatodolistItem :key="todoItem.id" :todo="todoItem"/>
-        <!--<li :key="todo.id">
-            <label>
-                {{ todo.description }}
-                <input type="checkbox" v-model="todo.checked"/>
-            </label>
-        </li>-->
-        </template>
-    </ul>
-
+  <form @submit.prevent='$_AddListTodo'>
+    <input type = "text" v-model = "input"/>
+    <button type = "submit">Adicionar</button>
+  </form>
+  <ul id="todos">
+    <template v-for='(todo, index) in todolist'>
+      <li :key= 'todo.id'>
+        <label>
+          {{index + 1}} - {{ todo.description }}
+         <input type= 'checkbox' v-model='todo.checkbox' @change="$_InputChanged(index)">
+        </label>
+      </li>
+  </template>
+  </ul>
 </div>
 </template>
-
 <script>
-import aulatodolistItem from './aula-todo-list-item.vue';
-
 function getListFromStorage() {
   return JSON.parse(
     localStorage.getItem('todo-list'),
@@ -38,67 +31,52 @@ function saveListInStorage(list) {
 }
 
 export default {
-  name: 'aulatodolist',
-
-  components: {
-      aulatodolistItem,
-  },
+  name: 'aula-todolist',
 
   data() {
     return {
       input: null,
-      todoList: getListFromStorage(),
+      todolist: getListFromStorage(),
     };
   },
 
   methods: {
-    $_onAddTodo() {
-      this.todoList.push({
-        id: Date.now(),
+    $_AddListTodo() {
+      console.log(this.todolist, this.todolist.Length);
+      this.todolist.push({
+        id: this.todolist ? this.todolist.length + 1 : 1,
+        data: Date.now(),
         description: this.input,
         checked: false,
       });
+
       this.input = null;
-
-      saveListInStorage(this.todoList);
+      saveListInStorage(this.todolist);
     },
-    
-    $_onChangeTodoChecked(todoId) { 
-        const todo = this.todolist.find(({ id }) => id === todoId);
-        if (!todo) return;
-        
-        todo.checked = !todo.checked;
 
-        saveListInStorage(this.todoList);
-
-    //    this.$nextTick(() == { 
-    //        saveListInStorage(this.todoList);
-    //});
+    $_InputChanged(index) {
+      this.todolist[index].checked = !this.todolist[index].checked;
+      saveListInStorage(this.todolist);
     },
-  },
-
-  created(){
-      window.addEventListener('storage', () =>{
-          this.todoList = getListFromStorage();
-      });
   },
 };
+
 </script>
+
 <style scoped>
 #todo-list {
   --primary-color: #2196F3;
   --primary-color-light: #64B5F6;
   --primary-color-dark: #1976D2;
-
-  --input-height: 32px;
+  --input-height: 50px;
 }
 
 form {
   display: flex;
   flex-direction: row;
 
-  width: 100%;
-  padding: 8px;
+  width: 40%;
+  padding: 6px;
 }
 
 form > input {

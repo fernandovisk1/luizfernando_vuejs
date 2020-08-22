@@ -1,23 +1,86 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <aulatodolist/>
+   <div id="todo-list">
+    <aulaform @addform="$_AddListTodo"/>
+    <aulatodo    :listatodo = "lista"    @change:item ="$_InputChanged">
+    <template #header> Lista</template>
+    <template #footer= "{ quantidade }">
+      <div style="text-align: right;">
+        Total: {{ quantidade}} itens
+      </div>
+    </template>
+    </aulatodo>
   </div>
 </template>
 
 <script>
-import aulatodolist from './components/aula-todo-list.vue'
+import aulatodo from './components/aula-todo.vue';
+import aulaform from './components/aula-todoform.vue';
+
+// storage  - hospedeiro
+function getListFromStorage() {
+  return JSON.parse(
+    localStorage.getItem('todo-list'),
+  ) ?? [];
+}
+function saveListInStorage(list) {
+  localStorage.setItem(
+    'todo-list',
+    JSON.stringify(list),
+  );
+}
 
 export default {
-  name: 'App',
+  name: 'todo-list',
   components: {
-    aulatodolist,
+    aulatodo,
+    aulaform,
+  },
+
+  data() {
+    return {
+      lista: getListFromStorage(),
+    };
+  },
+  methods: {
+    $_AddListTodo(nomeItem) {
+      this.lista.push({
+        id: this.lista ? this.lista.length + 1 : 1,
+        data: Date.now(),
+        description: nomeItem,
+        checked: false,
+      });
+      saveListInStorage(this.lista);
+    },
+    $_InputChanged(todo) {
+      const index = this.lista.findIndex(({ id }) => id === todo.id);
+      if (index < 0) {
+        return;
+      }
+      this.$set(this.lista, index, todo);
+      saveListInStorage(this.lista);
+    },
+  },
+  // evento  - captura ação - click
+  created() {
+    window.addEventListener('storage', () => {
+      this.lista = getListFromStorage();
+    });
   },
 };
 </script>
-
 <style>
+*{
+  box-sizing: border-box;
+}
+  :root {
+    --primary-color: #2196F3;
+    --primary-color-light: #64B5F6;
+    --primary-color-dark: #1976D2;
+    --input-height: 32px;
+  }
+</style>
+
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

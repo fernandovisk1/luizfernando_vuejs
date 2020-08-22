@@ -13,9 +13,9 @@
 
 <script>
 export default {
-  name: 'aula-todolistitem',
+  name: 'aula-todo-list-item',
   props: {
-    item: Object,
+    item: Object, 
   },
   computed: {
     $_Index() {

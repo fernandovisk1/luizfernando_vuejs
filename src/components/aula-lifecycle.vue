@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-      <p>{{varnome1+varnome2}}</p>
+      <p>{{varteste1+varteste2}}</p>
   </div>
 </template>
 
@@ -8,15 +8,15 @@
 export default {
   data() {
     return {
-      varnome1: 'Vue',
-      varnome2: 'Js',
+      varteste1: 'Vue',
+      varteste2: 'Js',
     };
   },
 
   methods: {
     exibenome() {
-      this.varnome1 = '1';
-      this.varnome2 = '2';
+      this.varteste1 = '1';
+      this.varteste2 = '2';
     },
   },
 
@@ -28,7 +28,7 @@ export default {
   },
 
   created() {
-    this.varnome1 = 'teste';
+    this.varteste1 = 'TESTE MSG';
   },
 };
 </script>

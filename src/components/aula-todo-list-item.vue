@@ -1,19 +1,31 @@
 <template>
   <li>
     <label>
-   {{$_Index }} - {{$_description }}
+      {{$_Index }} - {{$_description }}
+
+        <div>
+          {{ $_Data | date}}
+        </div>
+  
       <input
         type="checkbox"
         :checked="$_Checked"
         @change=$_OnChangeCheck()
-        />
-       </label>
+      />
+    </label>
   </li>
 </template>
 
 <script>
+import dateFilter from '../filters/date.js';
+
 export default {
   name: 'aula-todo-list-item',
+
+  filters: {
+    date: dateFilter,
+  },
+
   props: {
     item: Object, 
   },
@@ -27,12 +39,19 @@ export default {
     $_Checked() {
       return this.item?.checked;
     },
+    $_created() {
+      return dateFilter(this.value?.created);
+    },
+    $_Data() {
+      return this.item?.data;
+    },
   },
   methods: {
     $_OnChangeCheck() {
       this.$emit('input', {
         ...this.item,
         checked: !this.item.checked,
+        data: Date.now(),
       });
     },
   },

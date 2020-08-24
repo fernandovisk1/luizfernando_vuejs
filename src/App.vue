@@ -1,15 +1,33 @@
 <template>
    <div id="todo-list">
     <aulaform @addform="$_AddListTodo"/>
-    <aulatodo    :listatodo = "lista"    @change:item ="$_InputChanged">
-    <template #header> Lista</template>
-    <template #footer= "{ quantidade }">
-      <div style="text-align: right;">
-        Total: {{ quantidade}} itens
-      </div>
-    </template>
-    </aulatodo>
-  </div>
+      <template v-if= "!$_unchecked.lenght && !$_checked.length" >
+        <h1> Add um novo Todo</h1>
+      </template>
+
+      <template v-if="$_unchecked.length > 0">
+        <aulatodo  :listatodo = "$_unchecked"  @change:item ="$_InputChanged">
+          <template #header> Lista Aberta</template>
+          <template #footer= "{ quantidade }">
+            <div style="text-align: right;">
+              Total: {{ quantidade}} itens
+            </div>
+          </template>
+        </aulatodo>
+      </template>
+
+       <template v-if="$_checked.length > 0">
+        <aulatodo  :listatodo = "$_checked"  @change:item ="$_InputChanged">
+          <template #header> Lista Fechados</template>
+          <template #footer= "{ quantidade }">
+            <div style="text-align: right;">
+              Total: {{ quantidade}} itens
+            </div>
+          </template>
+        </aulatodo>
+      </template>
+
+   </div>
 </template>
 
 <script>
@@ -40,6 +58,19 @@ export default {
     return {
       lista: getListFromStorage(),
     };
+  },
+  computed: {
+    $_unchecked() {
+      return this.lista
+        .filter((item) => !item.checked);
+    },
+    $_checked() {
+      return this.lista
+        .filter((item) => item.checked);
+    },
+    $_showList() {
+      return this.lista.length > 0;
+    },
   },
   methods: {
     $_AddListTodo(nomeItem) {

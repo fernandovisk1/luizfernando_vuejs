@@ -1,5 +1,6 @@
 <template>
    <div id="todo-list">
+     <aulaalert/>
     <aulaform @addform="$_AddListTodo"/>
       <template v-if= "!$_unchecked.lenght && !$_checked.length" >
         <h1> Add um novo Todo</h1>
@@ -33,6 +34,7 @@
 <script>
 import aulatodo from './components/aula-todo.vue';
 import aulaform from './components/aula-todoform.vue';
+import aulaalert from './components/aula-alert.vue';
 
 // storage  - hospedeiro
 function getListFromStorage() {
@@ -52,6 +54,7 @@ export default {
   components: {
     aulatodo,
     aulaform,
+    aulaalert,
   },
 
   data() {

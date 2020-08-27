@@ -100,6 +100,8 @@ export default {
     window.addEventListener('storage', () => {
       this.lista = getListFromStorage();
     });
+
+    console.log('ATUALIZAÇÂO FAKE');
   },
 };
 </script>

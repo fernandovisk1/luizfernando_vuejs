@@ -1,6 +1,7 @@
 <template>
    <div id="todo-list">
-     <aulaalert/>
+    <aulaalert/>
+     
     <aulaform @addform="$_AddListTodo"/>
       <template v-if= "!$_unchecked.lenght && !$_checked.length" >
         <h1> Add um novo Todo</h1>

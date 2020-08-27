@@ -2,6 +2,8 @@
 
 import { register } from 'register-service-worker'
 
+import AlertEvent from './events/AlertEvent';
+
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready () {
@@ -16,11 +18,30 @@ if (process.env.NODE_ENV === 'production') {
     cached () {
       console.log('Content has been cached for offline use.')
     },
-    updatefound () {
+    updatefound (registration) {
       console.log('New content is downloading.')
+
+      setInterval(() => {
+        registration.update();
+      }, 1000 * 60 * 60);
     },
-    updated () {
+    updated (registration) {
       console.log('New content is available; please refresh.')
+
+      const { waiting } = registration;
+      if (!waiting) return;
+
+      document.dispatchEvent(new AlertEvent({
+        message: 'Uma nova versão está diponível',
+        button: {
+          text: 'Atualizar',
+          handler() {
+            waiting.postMessage({
+              type: 'SKIP_WAITING',
+            });
+          },
+        },
+      }));
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')
@@ -29,4 +50,15 @@ if (process.env.NODE_ENV === 'production') {
       console.error('Error during service worker registration:', error)
     }
   })
+
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener(
+    'controllerchange',
+    () => {
+      if (refreshing) return;
+
+      refreshing = true;
+      window.location.reload();
+    },
+  );
 }
